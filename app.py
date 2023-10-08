@@ -3,11 +3,11 @@ import replicate
 import os
 
 # App title
-st.set_page_config(page_title="🦙💬 Llama 2 Chatbot")
+st.set_page_config(page_title="🦙💬 Llama 2 Chatbot for Children")
 
 # Replicate Credentials
 with st.sidebar:
-    st.title('🦙💬 Llama 2 Chatbot')
+    st.title('🦙💬 Llama 2 Chatbot for Children')
     if 'REPLICATE_API_TOKEN' in st.secrets:
         st.success('API key already provided!', icon='✅')
         replicate_api = st.secrets['REPLICATE_API_TOKEN']
@@ -34,9 +34,9 @@ with st.sidebar:
     max_length = st.sidebar.slider('max_length', min_value=32, max_value=128, value=120, step=8)
     st.markdown('📖 Learn how to build this app in this [blog](https://blog.streamlit.io/how-to-build-a-llama-2-chatbot/)!')
 
-# Store LLM generated responses
+# Store LLM-generated responses
 if "messages" not in st.session_state.keys():
-    st.session_state.messages = [{"role": "assistant", "content": "How may I assist you today?"}]
+    st.session_state.messages = [{"role": "teacher", "content": "Hello there! What are we doing today?"}]
 
 # Display or clear chat messages
 for message in st.session_state.messages:
@@ -44,13 +44,13 @@ for message in st.session_state.messages:
         st.write(message["content"])
 
 def clear_chat_history():
-    st.session_state.messages = [{"role": "assistant", "content": "Hello there! What are we doing today?"}]
+    st.session_state.messages = [{"role": "teacher", "content": "Hello there! What are we doing today?"}]
 st.sidebar.button('Clear Chat History', on_click=clear_chat_history)
 # Function for generating LLaMA2 response. Refactored from https://github.com/a16z-infra/llama2-chatbot
 def generate_llama2_response(prompt_input):
     string_dialogue = "You are a helpful teacher to an autistic and dyslexic child. You do not respond as 'Child' or pretend to be 'Child'. You only respond once as 'Teacher'."
     for dict_message in st.session_state.messages:
-        if dict_message["role"] == "user":
+        if dict_message["role"] == "child":
             string_dialogue += "Child: " + dict_message["content"] + "\n\n"
         else:
             string_dialogue += "Teacher: " + dict_message["content"] + "\n\n"
@@ -76,5 +76,5 @@ if st.session_state.messages[-1]["role"] != "teacher":
                 full_response += item
                 placeholder.markdown(full_response)
             placeholder.markdown(full_response)
-    message = {"role": "assistant", "content": full_response}
+    message = {"role": "teacher", "content": full_response}
     st.session_state.messages.append(message)
